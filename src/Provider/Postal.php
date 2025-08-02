@@ -21,12 +21,14 @@ use WHEP\ProviderInterface;
 class Postal extends AbstractProvider
 {
     protected $_typesMap = [
-        'MessageLoaded' => ProviderInterface::TYPE_OPENED,
-        'MessageLinkClicked' => ProviderInterface::TYPE_CLICK,
-        'Sent' => ProviderInterface::TYPE_SENT,
-        'SoftFail' => ProviderInterface::TYPE_SOFT_FAIL,
-        'HardFail' => ProviderInterface::TYPE_HARD_FAIL,
-        'MessageBounced' => ProviderInterface::TYPE_BOUNCED,
+        'SoftFail' => ProviderInterface::EVENT_BOUNCE_SOFT,
+        'HardFail' => ProviderInterface::EVENT_BOUNCE_HARD,
+        'MessageBounced' => ProviderInterface::EVENT_BOUNCE_HARD,
+        'Held' => ProviderInterface::EVENT_BLOCKED,
+        'Sent' => ProviderInterface::EVENT_SENT,
+        'MessageLoaded' => ProviderInterface::EVENT_OPENED,
+        'MessageLinkClicked' => ProviderInterface::EVENT_CLICK,
+        'DomainDNSError' => ProviderInterface::EVENT_ERROR,
     ];
 
     /**
@@ -43,10 +45,10 @@ class Postal extends AbstractProvider
         $bounce = $payload['bounce'] ?? null;
 
         // Type
-        $this->_type = $this->_typesMap[$status] ?? ProviderInterface::TYPE_ERROR;
+        $this->_type = $this->_typesMap[$status] ?? ProviderInterface::EVENT_ERROR;
 
         // Details
-        $this->_details = $payload['details'] ?? $bounce['subject'] ?? null;
+        $this->_details = $payload['details'] ?? $bounce['subject'] ?? $payload['dkim_error'] ?? null;
 
         // SMTP output
         $this->_smtp = $payload['output'] ?? null;
@@ -55,9 +57,9 @@ class Postal extends AbstractProvider
         $this->_raw = $payload;
 
         // E-mail
-        $this->_email = $message['to'] ?? null;
+        $this->_recipient = $message['to'] ?? null;
 
-        if ($this->_type === self::TYPE_CLICK) {
+        if ($this->_type === ProviderInterface::EVENT_CLICK) {
             $this->_url = $payload['url'] ?? null;
         }
     }

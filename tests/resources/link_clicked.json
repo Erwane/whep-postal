@@ -17,7 +17,7 @@
         "url": "https://company.com/landing_page",
         "token": "MyTok3n",
         "ip_address": "10.1.2.3",
-        "user_agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:141.0) Gecko/20100101 Firefox/141.0"
+        "user_agent": "Mozilla/5.0"
     },
     "uuid": "1eb5e8ee-b764-4bdd-a686-ec9f3383e8c7"
 }

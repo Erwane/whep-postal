@@ -20,8 +20,8 @@ use WHEP\WebhookProviderException;
 
 $provider = Client::getProvider('postal', [
     'callbacks' => [
-        ProviderInterface::TYPE_BLOCKED => [$this, 'callbackInvalidate'],
-        ProviderInterface::TYPE_QUOTA => [$this, 'callbackUnsub'],
+        ProviderInterface::EVENT_BLOCKED => [$this, 'callbackInvalidate'],
+        ProviderInterface::EVENT_BOUNCE_QUOTA => [$this, 'callbackUnsub'],
     ],
 ]);
 

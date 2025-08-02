@@ -25,17 +25,33 @@ class PostalTest extends TestCase
         $p = Client::getProvider('postal');
         $p->process([]);
 
-        $this->assertEquals(ProviderInterface::TYPE_ERROR, $p->getType());
+        $this->assertEquals(ProviderInterface::EVENT_ERROR, $p->getType());
         $this->assertEquals([], $p->getRaw());
-        $this->assertNull($p->getEmail());
+        $this->assertNull($p->getRecipient());
     }
 
     public static function dataLoad(): array
     {
         return [
             [
+                'bounced_undeliverable.json',
+                ProviderInterface::EVENT_BOUNCE_HARD,
+                'Undeliverable: My Newsletter',
+                null,
+                'recipient@example.com',
+                null,
+            ],
+            [
+                'bounced_undeliverable_fr.json',
+                ProviderInterface::EVENT_BOUNCE_HARD,
+                'Non remis : My Newsletter',
+                null,
+                'recipient@example.com',
+                null,
+            ],
+            [
                 'bounced_undelivered.json',
-                ProviderInterface::TYPE_BOUNCED,
+                ProviderInterface::EVENT_BOUNCE_HARD,
                 'Undelivered Mail Returned to Sender',
                 null,
                 'recipient@example.com',
@@ -43,7 +59,7 @@ class PostalTest extends TestCase
             ],
             [
                 'delayed_bad_reputation.json',
-                ProviderInterface::TYPE_ERROR,
+                ProviderInterface::EVENT_ERROR,
                 'No SMTP servers were available.',
                 '554 IP=1.2.3.4 - None/bad reputation.',
                 'recipient.name@example.com',
@@ -51,23 +67,15 @@ class PostalTest extends TestCase
             ],
             [
                 'delayed_defer_busy.json',
-                ProviderInterface::TYPE_SOFT_FAIL,
+                ProviderInterface::EVENT_BOUNCE_SOFT,
                 'No SMTP servers were available.',
                 '451 DEFER - D: We are busy;',
                 'recipient@example.com',
                 null,
             ],
             [
-                'delayed_no_smtp_softfail.json',
-                ProviderInterface::TYPE_SOFT_FAIL,
-                'No SMTP servers were available for mx.com. No hosts to try.',
-                '',
-                'recipient@example.com',
-                null,
-            ],
-            [
                 'delayed_quota.json',
-                ProviderInterface::TYPE_QUOTA,
+                ProviderInterface::EVENT_BOUNCE_QUOTA,
                 'Temporary SMTP delivery error when sending to 1.2.3.4:25 (gmail-smtp-in.l.google.com)',
                 "452-4.2.2 The recipient's inbox is out of storage space. Please direct the",
                 'recipient@example.com',
@@ -75,19 +83,51 @@ class PostalTest extends TestCase
             ],
             [
                 'delivery_failed.json',
-                ProviderInterface::TYPE_HARD_FAIL,
+                ProviderInterface::EVENT_BOUNCE_HARD,
                 'Permanent SMTP delivery error when sending to 1.2.3.4:25 (mx.com)',
                 '550 5.4.1 Recipient address rejected: Access denied.',
                 'recipient@example.com',
                 null,
             ],
             [
+                'dns_error.json',
+                ProviderInterface::EVENT_ERROR,
+                'The DKIM record at example.com does not match the record',
+                null,
+                null,
+                null,
+            ],
+            [
+                'held.json',
+                ProviderInterface::EVENT_BLOCKED,
+                'Recipient (recipient@example.com) is on the suppression list',
+                '',
+                'recipient@example.com',
+                null,
+            ],
+            [
                 'link_clicked.json',
-                ProviderInterface::TYPE_CLICK,
+                ProviderInterface::EVENT_CLICK,
                 null,
                 null,
                 'recipient@example.com',
                 'https://company.com/landing_page',
+            ],
+            [
+                'message_loaded.json',
+                ProviderInterface::EVENT_OPENED,
+                null,
+                null,
+                'test@example.com',
+                null,
+            ],
+            [
+                'sent.json',
+                ProviderInterface::EVENT_SENT,
+                'Message sent by SMTP to aspmx.l.google.com',
+                '250 2.0.0 OK 1477944899 ly2si31746747wjb.95 - gsmtp',
+                'test@example.com',
+                null,
             ],
         ];
     }
@@ -104,7 +144,7 @@ class PostalTest extends TestCase
         $this->assertEquals($type, $p->getType());
         $this->assertEquals($details, $p->getDetails());
         $this->assertEquals($smtp, $p->getSmtpResponse());
-        $this->assertEquals($email, $p->getEmail());
+        $this->assertEquals($email, $p->getRecipient());
         $this->assertEquals($url, $p->getUrl());
     }
 }

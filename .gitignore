@@ -9,6 +9,8 @@ composer.phar
 /coverage.xml
 /auth.json
 
+/tmp
+
 # OS generated files #
 ######################
 .DS_Store
