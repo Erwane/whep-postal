@@ -1,4 +1,4 @@
-# Postal webhook handler for [WHEP](https://github.com/Erwane/whep-postal) project
+# [Postal](https://docs.postalserver.io/) webhook handler for [WHEP](https://github.com/Erwane/whep-postal) project
 
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 [![codecov](https://codecov.io/gh/Erwane/whep-postal/branch/1.x/graph/badge.svg?token=hF5HhETnkg)](https://codecov.io/gh/Erwane/whep-postal)
@@ -6,7 +6,7 @@
 [![Packagist Downloads](https://img.shields.io/packagist/dt/Erwane/whep-postal)](https://packagist.org/packages/Erwane/whep-postal)
 [![Packagist Version](https://img.shields.io/packagist/v/Erwane/whep-postal)](https://packagist.org/packages/Erwane/whep-postal)
 
-Webhook handler for postal emailing provider.
+Webhook handler for [postal](https://docs.postalserver.io/) emailing provider.
 
 ## Usage
 
@@ -30,7 +30,7 @@ try {
     $provider->process($webhookData);
     
     // Data available from provider getters.
-    $email = $provider->getEmail();
+    $email = $provider->getRecipient();
     
     // Launch callbacks
     $provider->callback();
