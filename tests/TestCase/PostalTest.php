@@ -10,14 +10,15 @@ declare(strict_types=1);
 
 namespace TestCase;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ResourceHelper\File;
 use WHEP\Client;
+use WHEP\Provider\Postal;
 use WHEP\ProviderInterface;
 
-/**
- * @uses \WHEP\Provider\Postal
- */
+#[CoversClass(Postal::class)]
 class PostalTest extends TestCase
 {
     public function testLoadNoData(): void
@@ -132,7 +133,7 @@ class PostalTest extends TestCase
         ];
     }
 
-    /** @dataProvider dataLoad */
+    #[DataProvider('dataLoad')]
     public function testLoad($resource, $type, $details, $smtp, $email, $url): void
     {
         $json = File::getContent($resource);

@@ -8,4 +8,6 @@
  */
 declare(strict_types=1);
 
-ResourceHelper\ResourceHelper::setBaseDir(__DIR__ . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR);
+use ResourceHelper\ResourceHelper;
+
+ResourceHelper::setBaseDir(__DIR__ . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR);

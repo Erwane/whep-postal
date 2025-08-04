@@ -20,7 +20,7 @@ use WHEP\ProviderInterface;
  */
 class Postal extends AbstractProvider
 {
-    protected $_typesMap = [
+    protected array $_typesMap = [
         'SoftFail' => ProviderInterface::EVENT_BOUNCE_SOFT,
         'HardFail' => ProviderInterface::EVENT_BOUNCE_HARD,
         'MessageBounced' => ProviderInterface::EVENT_BOUNCE_HARD,
@@ -40,12 +40,12 @@ class Postal extends AbstractProvider
 
         $payload = $data['payload'] ?? $data;
 
-        $status = $payload['status'] ?? $data['event'] ?? null;
+        $event = $payload['status'] ?? $data['event'] ?? null;
         $message = $payload['message'] ?? $payload['original_message'] ?? [];
         $bounce = $payload['bounce'] ?? null;
 
         // Type
-        $this->_type = $this->_typesMap[$status] ?? ProviderInterface::EVENT_ERROR;
+        $this->_type = $this->_typesMap[$event] ?? ProviderInterface::EVENT_ERROR;
 
         // Details
         $this->_details = $payload['details'] ?? $bounce['subject'] ?? $payload['dkim_error'] ?? null;
