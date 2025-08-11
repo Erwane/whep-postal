@@ -1,8 +1,8 @@
 # [Postal](https://docs.postalserver.io/) webhook handler for [WHEP](https://github.com/Erwane/whep-postal) project
 
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
-[![codecov](https://codecov.io/gh/Erwane/whep-postal/branch/2.x/graph/badge.svg?token=F848Z7Z1Z2)](https://codecov.io/gh/Erwane/whep-postal)
-[![Build Status](https://github.com/Erwane/whep-postal/actions/workflows/ci.yml/badge.svg?branch=2.x)](https://github.com/Erwane/whep-postal/actions)
+[![codecov](https://codecov.io/gh/Erwane/whep-postal/branch/2.1/graph/badge.svg?token=F848Z7Z1Z2)](https://codecov.io/gh/Erwane/whep-postal)
+[![Build Status](https://github.com/Erwane/whep-postal/actions/workflows/ci.yml/badge.svg?branch=2.1)](https://github.com/Erwane/whep-postal/actions)
 [![Packagist Downloads](https://img.shields.io/packagist/dt/Erwane/whep-postal)](https://packagist.org/packages/Erwane/whep-postal)
 [![Packagist Version](https://img.shields.io/packagist/v/Erwane/whep-postal)](https://packagist.org/packages/Erwane/whep-postal)
 
@@ -15,28 +15,33 @@ composer require erwane/whep-postal
 ```
 
 ```php
-use WHEP\Client;
-use WHEP\WebhookProviderException;
-
-$provider = Client::getProvider('postal', [
-    'callbacks' => [
-        ProviderInterface::EVENT_BLOCKED => [$this, 'callbackInvalidate'],
-        ProviderInterface::EVENT_BOUNCE_QUOTA => [$this, 'callbackUnsub'],
-    ],
-]);
+use WHEP\Exception\IpException;  
+use WHEP\Exception\ProviderException;  
+use WHEP\Factory;
 
 try {
+    $provider = Factory::provider('postal', [
+        'allowed_ip' => ['my.postal.server.ipv4', 'my:postal:server::ipv6'],
+        'client_ip' => $_SERVER['REMOTE_ADDR'] ?? null, // Use method from your framework to get the ServerRequest client ip.
+        'callbacks' => [
+            ProviderInterface::EVENT_BLOCKED => [$this, 'callbackInvalidate'],
+            ProviderInterface::EVENT_BOUNCE_QUOTA => [$this, 'callbackUnsub'],
+        ],
+    ]);
+
     // process the data.
     $provider->process($webhookData);
     
     // Data available from provider getters.
-    $email = $provider->getRecipient();
+    $recipient = $provider->getRecipient();
     
     // Launch callbacks
     $provider->callback();
-} catch (WebhookProviderException $e) {
+} catch (IpException $e) {
+    // log ?
+} catch (ProviderException $e) {
     // log ?
 }
 ```
 
-See [WHEP Client README](https://github.com/Erwane/whep-client) for getters.
+See [WHEP Client README](https://github.com/Erwane/whep-client) for options and getters methods.

@@ -14,8 +14,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ResourceHelper\File;
-use WHEP\Client;
-use WHEP\Provider\Postal;
+use WHEP\Factory;
 use WHEP\ProviderInterface;
 
 #[CoversClass(Postal::class)]
@@ -23,7 +22,7 @@ class PostalTest extends TestCase
 {
     public function testLoadNoData(): void
     {
-        $p = Client::getProvider('postal');
+        $p = Factory::provider('postal', ['check_ip' => false]);
         $p->process([]);
 
         $this->assertEquals(ProviderInterface::EVENT_ERROR, $p->getType());
@@ -139,7 +138,7 @@ class PostalTest extends TestCase
         $json = File::getContent($resource);
         $data = json_decode($json, true);
 
-        $p = Client::getProvider('postal');
+        $p = Factory::provider('postal', ['allowed_ip' => ['192.168.0.1'], 'client_ip' => '192.168.0.1']);
         $p->process($data);
 
         $this->assertEquals($type, $p->getType());
