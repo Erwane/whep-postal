@@ -15,6 +15,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use ResourceHelper\File;
 use WHEP\Factory;
+use WHEP\Provider\Postal;
 use WHEP\ProviderInterface;
 
 #[CoversClass(Postal::class)]
