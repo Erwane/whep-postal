@@ -15,28 +15,31 @@ composer require erwane/whep-postal
 ```
 
 ```php
-use WHEP\Client;
-use WHEP\WebhookProviderException;
-
-$provider = Client::getProvider('postal', [
-    'callbacks' => [
-        ProviderInterface::EVENT_BLOCKED => [$this, 'callbackInvalidate'],
-        ProviderInterface::EVENT_BOUNCE_QUOTA => [$this, 'callbackUnsub'],
-    ],
-]);
+use WHEP\Exception\IpException;use WHEP\Exception\ProviderException;use WHEP\Factory;
 
 try {
+    $provider = Factory::provider('postal', [
+        'allowed_ip' => ['my.postal.server.ipv4', 'my:postal:server::ipv6'],
+        'client_ip' => $_SERVER['REMOTE_ADDR'] ?? null, // Use method from your framework to get the ServerRequest client ip.
+        'callbacks' => [
+            ProviderInterface::EVENT_BLOCKED => [$this, 'callbackInvalidate'],
+            ProviderInterface::EVENT_BOUNCE_QUOTA => [$this, 'callbackUnsub'],
+        ],
+    ]);
+
     // process the data.
     $provider->process($webhookData);
     
     // Data available from provider getters.
-    $email = $provider->getRecipient();
+    $recipient = $provider->getRecipient();
     
     // Launch callbacks
     $provider->callback();
-} catch (WebhookProviderException $e) {
+} catch (IpException $e) {
+    // log ?
+} catch (ProviderException $e) {
     // log ?
 }
 ```
 
-See [WHEP Client README](https://github.com/Erwane/whep-client) for getters.
+See [WHEP Client README](https://github.com/Erwane/whep-client) for options and getters methods.

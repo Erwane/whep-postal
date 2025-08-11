@@ -21,11 +21,11 @@
     ],
     "require": {
         "php": "^7.2",
-        "erwane/whep-client": "1.x-dev"
+        "erwane/whep-client": "^1.0"
     },
     "require-dev": {
         "cakephp/cakephp-codesniffer": "^4.0",
-        "erwane/phpunit-resource-helper": "^1.0-dev",
+        "erwane/phpunit-resource-helper": "^1.0",
         "phpunit/phpunit": "^8.5",
         "symfony/var-dumper": "^v5.0"
     },
