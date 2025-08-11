@@ -15,7 +15,9 @@ composer require erwane/whep-postal
 ```
 
 ```php
-use WHEP\Exception\IpException;use WHEP\Exception\ProviderException;use WHEP\Factory;
+use WHEP\Exception\IpException;  
+use WHEP\Exception\ProviderException;  
+use WHEP\Factory;
 
 try {
     $provider = Factory::provider('postal', [
