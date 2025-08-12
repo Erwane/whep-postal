@@ -34,6 +34,16 @@ class Postal extends AbstractProvider
     /**
      * @inheritDoc
      */
+    public function checkSecurity(array $data): ProviderInterface
+    {
+        $this->_checkClientIp($this->_config['client_ip']);
+
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
     protected function _load(array $data): void
     {
         parent::_load($data);

@@ -21,7 +21,7 @@
     ],
     "require": {
         "php": "8.0.*",
-        "erwane/whep-client": "2.0.*"
+        "erwane/whep-client": "~2.0.1"
     },
     "require-dev": {
         "cakephp/cakephp-codesniffer": "^4.0",
