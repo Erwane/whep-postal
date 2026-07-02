@@ -8,6 +8,10 @@
 
 Webhook handler for [postal](https://docs.postalserver.io/) emailing provider.
 
+## Deprecated
+
+Use `erwane/whep`. https://github.com/Erwane/whep
+
 ## Usage
 
 ```shell
